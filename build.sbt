@@ -7,6 +7,7 @@ ThisBuild / scalacOptions ++= Seq(
 val V = new {
   val zioInteropCats = "2.4.1.0"
   val zio = "1.0.7"
+  val zioActors = "0.0.9"
   val distage = "1.0.6"
   val tapir = "0.17.19"
   val sttp = "3.3.1"
@@ -23,6 +24,7 @@ val V = new {
 val Deps = new {
   val zioInteropCats = "dev.zio" %% "zio-interop-cats" % V.zioInteropCats
   val zio = "dev.zio" %% "zio" % V.zio
+  val zioActors = "dev.zio" %% "zio-actors" % V.zioActors
   val distageFramework = "io.7mind.izumi" %% "distage-framework" % V.distage
   val distageFrameworkDocker = "io.7mind.izumi" %% "distage-framework-docker" % V.distage
   val distageTestkitScalatest = "io.7mind.izumi" %% "distage-testkit-scalatest" % V.distage
@@ -57,6 +59,7 @@ lazy val `akka-roles` = (project in file("."))
     libraryDependencies ++= Seq(
       Deps.zio,
       Deps.zioInteropCats,
+      Deps.zioActors,
       Deps.logstageAdapterSlf4J,
       Deps.distageFramework,
 
