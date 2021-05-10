@@ -3,6 +3,7 @@ ThisBuild / version := "1.0-SNAPSHOT"
 ThisBuild / scalacOptions ++= Seq(
   "-Ymacro-annotations",
 )
+ThisBuild / dynverSeparator := "-"
 
 val V = new {
   val zioInteropCats = "2.4.1.0"
@@ -53,7 +54,7 @@ val commonSettings = Seq(
 )
 
 lazy val `akka-roles` = (project in file("."))
-  .enablePlugins(BuildInfoPlugin)
+  .enablePlugins(BuildInfoPlugin, JavaAppPackaging, DockerPlugin)
   .settings(commonSettings)
   .settings(
     libraryDependencies ++= Seq(

@@ -1,11 +1,10 @@
 package com.example
 
+import distage.{Tag, _}
 import zio._
 import zio.actors.Actor.Stateful
-import zio.actors._
+import zio.actors.{Supervisor, _}
 import zio.console._
-
-import java.io.File
 
 sealed trait Command[+_]
 
@@ -20,12 +19,24 @@ object Main extends App {
         }
     }
 
-    val program =
-      for {
-        _ <- putStrLn("123")
-      } yield ()
+    val program = for {
+      system <- ZIO.service[ActorSystem]
+      actor <- system.make("actor1", Supervisor.none, (), stateful)
+      doubled <- actor ! DoubleCommand(42)
+      _ <- putStrLn(s"$doubled")
+    } yield ()
 
-    program
+    def provideHas[R: HasConstructor, A: Tag](fn: R => A): Functoid[A] =
+      HasConstructor[R].map(fn)
+
+    val module = new ModuleDef {
+      make[ActorSystem].fromResource(ActorSystem("processing").toManaged(as => as.shutdown.ignore))
+      make[Task[Unit]].from(provideHas(program.provide))
+    }
+
+    Injector[Task]()
+      .produceGet[Task[Unit]](module)
+      .useEffect
       .exitCode
   }
 }
